@@ -1,3 +1,4 @@
+/* ---------- Tab switching ---------- */
 document.getElementById('found-tab').addEventListener('click', () => {
   document.getElementById('found-form').classList.add('active');
   document.getElementById('lost-form').classList.remove('active');
@@ -12,40 +13,47 @@ document.getElementById('lost-tab').addEventListener('click', () => {
   document.getElementById('found-tab').classList.remove('active');
 });
 
+/* ---------- Found form submit ---------- */
 document.getElementById('foundItemForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const token = grecaptcha.getResponse();
+
   const payload = {
     email: foundEmail.value,
     item_name: foundName.value,
     color: foundColor.value,
     brand: foundBrand.value,
-    location: foundLocation.value,
-    captchaToken: token
+    location: foundLocation.value
   };
-  const res = await fetch('/api/found', {
-    method: 'POST',
+
+  const res  = await fetch('/api/found', {
+    method : 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body   : JSON.stringify(payload)
   });
+
   const data = await res.json();
   alert(data.message || 'Submitted');
+  foundItemForm.reset();
 });
 
+/* ---------- Lost form submit ---------- */
 document.getElementById('lostItemForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const token = grecaptcha.getResponse();
+
   const payload = {
     item_name: lostName.value,
-    color: lostColor.value,
-    brand: lostBrand.value,
-    captchaToken: token
+    color:    lostColor.value,
+    brand:    lostBrand.value
   };
-  const res = await fetch('/api/search', {
-    method: 'POST',
+
+  const res  = await fetch('/api/search', {
+    method : 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body   : JSON.stringify(payload)
   });
+
   const data = await res.json();
-  document.getElementById('searchResults').innerText = JSON.stringify(data, null, 2);
+  document.getElementById('searchResults').innerText =
+    JSON.stringify(data, null, 2);
+  lostItemForm.reset();
 });
